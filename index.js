@@ -149,10 +149,10 @@ exports.handler = async(event, context) => {
             .promise();
           body = item;
           break;
-        case "GET /memage":
+        case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
-        case "PUT /memage":
+        case "PUT /memages":
           requestJSON = JSON.parse(event.body);
           id = requestJSON.id || uuidv4()
           item = {
