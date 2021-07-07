@@ -81,15 +81,21 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /comments":
           requestJSON = JSON.parse(event.body);
+          let mems = []
+          if (requestJSON.mems) {
+            mems = requestJSON.mems.map(mem => {
+              return { id: uuidv4(), ...mem }
+            })
+          }
           id = requestJSON.id || uuidv4()
-          const memId = requestJSON.id || uuidv4()
           item = {
             id,
             links: requestJSON.links,
             front: requestJSON.front,
             back: requestJSON.back,
             markerId: requestJSON.markerId,
-            mems: { id: memId, ...requestJSON.mems },
+            imageIndex: requestJSON.imageIndex,
+            mems,
             creator,
             polygons: requestJSON.polygons,
             width: requestJSON.width,
@@ -128,8 +134,7 @@ exports.handler = async(event, context) => {
           item = {
             id,
             marker_id: requestJSON.markerId,
-            image: requestJSON.image,
-            width: requestJSON.width,
+            image_key: requestJSON.image_key,
             creator,
             email,
           }
