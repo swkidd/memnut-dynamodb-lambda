@@ -85,6 +85,7 @@ exports.handler = async(event, context) => {
           const memId = requestJSON.id || uuidv4()
           item = {
             id,
+            order: requestJSON.order,
             links: requestJSON.links,
             front: requestJSON.front,
             back: requestJSON.back,
