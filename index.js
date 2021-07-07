@@ -90,6 +90,7 @@ exports.handler = async(event, context) => {
           id = requestJSON.id || uuidv4()
           item = {
             id,
+            order: requestJSON.order,
             links: requestJSON.links,
             front: requestJSON.front,
             back: requestJSON.back,
@@ -134,6 +135,7 @@ exports.handler = async(event, context) => {
           item = {
             id,
             marker_id: requestJSON.markerId,
+            image_index: requestJSON.imageIndex,
             image_key: requestJSON.image_key,
             creator,
             email,
