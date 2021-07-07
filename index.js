@@ -64,7 +64,8 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /markers":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             latlng: requestJSON.latlng,
@@ -88,7 +89,8 @@ exports.handler = async(event, context) => {
               return { id: uuidv4(), ...mem }
             })
           }
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             order: requestJSON.order,
@@ -132,7 +134,8 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /mem":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             marker_id: requestJSON.markerId,
@@ -154,7 +157,8 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /memages":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             image_key: requestJSON.image_key,
