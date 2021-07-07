@@ -4,6 +4,7 @@ const { "v4": uuidv4 } = require('uuid');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const MARKER_DB = "memnut-markers"
+const MEMAGE_DB = "memnut-memages"
 const MEM_DB = "memnut-mems"
 const COMMENT_DB = "memnut-comments"
 
@@ -136,6 +137,26 @@ exports.handler = async(event, context) => {
             id,
             marker_id: requestJSON.markerId,
             image_index: requestJSON.imageIndex,
+            image_key: requestJSON.image_key,
+            creator,
+            email,
+          }
+          await dynamo
+            .put({
+              TableName: MEM_DB,
+              Item: item
+            })
+            .promise();
+          body = item;
+          break;
+        case "GET /memage":
+          body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
+          break;
+        case "PUT /memage":
+          requestJSON = JSON.parse(event.body);
+          id = requestJSON.id || uuidv4()
+          item = {
+            id,
             image_key: requestJSON.image_key,
             creator,
             email,
