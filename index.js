@@ -6,20 +6,19 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MEM_DB = "memnut-mems";
-const COMMENT_DB = "memnut-comments";
 
-const getOwnItems = (db, id, email) => {
-  const params = {
-    TableName: db,
-    FilterExpression: "id = :id AND email = :email",
-    ExpressionAttributeValues: {
-      ":id": id,
-      ":email": email,
-    },
-  };
+// const getOwnItems = (db, id, email) => {
+//   const params = {
+//     TableName: db,
+//     FilterExpression: "id = :id AND email = :email",
+//     ExpressionAttributeValues: {
+//       ":id": id,
+//       ":email": email,
+//     },
+//   };
 
-  return await dynamo.scan(params).promise();
-};
+//   return await dynamo.scan(params).promise();
+// };
 
 exports.handler = async (event, context) => {
   let body;
@@ -77,74 +76,68 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id 
-          getResp = getOwnItems(MARKER_DB, id, email);
-          if (getResp.Items.length > 0) {
-            item = {
-              id,
-              latlng: requestJSON.latlng,
-              mem_ids: requestJSON.memIds,
-            };
-            await dynamo
-              .put({
-                TableName: MARKER_DB,
-                Item: item,
-              })
-              .promise();
-            body = item;
-          } else {
-            throw new Error("invalid request");
-          }
+          id = event.pathParameters.id;
+          item = {
+            id,
+            latlng: requestJSON.latlng,
+            mem_ids: requestJSON.memIds,
+            image_key: requestJSON.imageKey,
+            creator,
+            email,
+          };
+          await dynamo
+            .put({
+              TableName: MARKER_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
           break;
-        case "GET /mem":
+        case "GET /mems":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
           break;
-        case "PUT /mem/{id}":
+        case "PUT /mems/{id}":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id 
-          getResp = getOwnItems(MEM_DB, id, email);
-          if (getResp.Items.length > 0) {
-            item = {
-              id,
-              order: requestJSON.order,
-              front: requestJSON.front,
-              back: requestJSON.back,
-              polygon: requestJSON.polygon,
-              width: requestJSON.width,
-            };
-            await dynamo
-              .put({
-                TableName: MEM_DB,
-                Item: item,
-              })
-              .promise();
-            body = item;
-          } else {
-            throw new Error("invalid request");
-          }
+          id = event.pathParameters.id;
+          item = {
+            id,
+            order: requestJSON.order,
+            front: requestJSON.front,
+            back: requestJSON.back,
+            polygon: requestJSON.polygon,
+            width: requestJSON.width,
+            image_key: requestJSON.imageKey,
+            creator,
+            email,
+          };
+          await dynamo
+            .put({
+              TableName: MEM_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
           break;
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
         case "PUT /memages/{id}":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id 
-          getResp = getOwnItems(MEMAGE_DB, id, email);
-          if (getResp.Items.length > 0) {
-            item = {
-              id,
-              mem_ids: requestJSON.memIds,
-            };
-            await dynamo
-              .put({
-                TableName: MEMAGE_DB,
-                Item: item,
-              })
-              .promise();
-            body = item;
-          } else {
-            throw new Error("invalid request");
-          }
+          id = event.pathParameters.id;
+          item = {
+            id,
+            mem_ids: requestJSON.memIds,
+            image_key: requestJSON.imageKey,
+            creator,
+            email,
+          };
+          await dynamo
+            .put({
+              TableName: MEMAGE_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
           break;
         default:
           throw new Error(`Unsupported route: "${event.routeKey}"`);
