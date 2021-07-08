@@ -162,12 +162,13 @@ exports.handler = async(event, context) => {
           item = {
             id,
             image_key: requestJSON.image_key,
+            mem_ids: requestJSON.mem_ids,
             creator,
             email,
           }
           await dynamo
             .put({
-              TableName: MEM_DB,
+              TableName: MEMAGE_DB,
               Item: item
             })
             .promise();
