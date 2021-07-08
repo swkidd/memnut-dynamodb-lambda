@@ -62,25 +62,6 @@ exports.handler = async(event, context) => {
             })
             .promise();
           break;
-        case "PUT /markers":
-          requestJSON = JSON.parse(event.body);
-          // id = requestJSON.id || uuidv4()
-          id = uuidv4()
-          item = {
-            id,
-            latlng: requestJSON.latlng,
-            image: requestJSON.image,
-            creator,
-            email,
-          }
-          await dynamo
-            .put({
-              TableName: MARKER_DB,
-              Item: item
-            })
-            .promise();
-          body = item;
-          break;
         case "PUT /comments":
           requestJSON = JSON.parse(event.body);
           let mems = []
@@ -132,47 +113,8 @@ exports.handler = async(event, context) => {
         case "GET /mem":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
           break;
-        case "PUT /mem":
-          requestJSON = JSON.parse(event.body);
-          // id = requestJSON.id || uuidv4()
-          id = uuidv4()
-          item = {
-            id,
-            marker_id: requestJSON.markerId,
-            image_index: requestJSON.imageIndex,
-            image_key: requestJSON.image_key,
-            creator,
-            email,
-          }
-          await dynamo
-            .put({
-              TableName: MEM_DB,
-              Item: item
-            })
-            .promise();
-          body = item;
-          break;
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
-          break;
-        case "PUT /memages":
-          requestJSON = JSON.parse(event.body);
-          // id = requestJSON.id || uuidv4()
-          id = uuidv4()
-          item = {
-            id,
-            image_key: requestJSON.image_key,
-            mem_ids: requestJSON.mem_ids,
-            creator,
-            email,
-          }
-          await dynamo
-            .put({
-              TableName: MEMAGE_DB,
-              Item: item
-            })
-            .promise();
-          body = item;
           break;
         default:
           throw new Error(`Unsupported route: "${event.routeKey}"`);
