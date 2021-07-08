@@ -4,6 +4,7 @@ const { "v4": uuidv4 } = require('uuid');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const MARKER_DB = "memnut-markers"
+const MEMAGE_DB = "memnut-memages"
 const MEM_DB = "memnut-mems"
 const COMMENT_DB = "memnut-comments"
 
@@ -63,7 +64,8 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /markers":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             latlng: requestJSON.latlng,
@@ -81,8 +83,14 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /comments":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
-          const memId = requestJSON.id || uuidv4()
+          let mems = []
+          if (requestJSON.mems) {
+            mems = requestJSON.mems.map(mem => {
+              return { id: uuidv4(), ...mem }
+            })
+          }
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             order: requestJSON.order,
@@ -90,7 +98,8 @@ exports.handler = async(event, context) => {
             front: requestJSON.front,
             back: requestJSON.back,
             markerId: requestJSON.markerId,
-            mems: { id: memId, ...requestJSON.mems },
+            imageIndex: requestJSON.imageIndex,
+            mems,
             creator,
             polygons: requestJSON.polygons,
             width: requestJSON.width,
@@ -125,18 +134,41 @@ exports.handler = async(event, context) => {
           break;
         case "PUT /mem":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id || uuidv4()
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
           item = {
             id,
             marker_id: requestJSON.markerId,
-            image: requestJSON.image,
-            width: requestJSON.width,
+            image_index: requestJSON.imageIndex,
+            image_key: requestJSON.image_key,
             creator,
             email,
           }
           await dynamo
             .put({
               TableName: MEM_DB,
+              Item: item
+            })
+            .promise();
+          body = item;
+          break;
+        case "GET /memages":
+          body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
+          break;
+        case "PUT /memages":
+          requestJSON = JSON.parse(event.body);
+          // id = requestJSON.id || uuidv4()
+          id = uuidv4()
+          item = {
+            id,
+            image_key: requestJSON.image_key,
+            mem_ids: requestJSON.mem_ids,
+            creator,
+            email,
+          }
+          await dynamo
+            .put({
+              TableName: MEMAGE_DB,
               Item: item
             })
             .promise();
