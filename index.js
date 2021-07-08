@@ -101,6 +101,7 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
+            memage_id: requestJSON.memage_id,
             order: requestJSON.order,
             front: requestJSON.front,
             back: requestJSON.back,
