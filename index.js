@@ -77,7 +77,7 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id;
+          id = event.pathParameters.id 
           getResp = getOwnItems(MARKER_DB, id, email);
           if (getResp.Items.length > 0) {
             item = {
@@ -99,9 +99,9 @@ exports.handler = async (event, context) => {
         case "GET /mem":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
           break;
-        case "PUT /mem":
+        case "PUT /mem/{id}":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id;
+          id = event.pathParameters.id 
           getResp = getOwnItems(MEM_DB, id, email);
           if (getResp.Items.length > 0) {
             item = {
@@ -126,9 +126,9 @@ exports.handler = async (event, context) => {
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
-        case "PUT /memages":
+        case "PUT /memages/{id}":
           requestJSON = JSON.parse(event.body);
-          id = requestJSON.id;
+          id = event.pathParameters.id 
           getResp = getOwnItems(MEMAGE_DB, id, email);
           if (getResp.Items.length > 0) {
             item = {
