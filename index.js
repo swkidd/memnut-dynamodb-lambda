@@ -7,18 +7,18 @@ const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MEM_DB = "memnut-mems";
 
-// const getOwnItems = (db, id, email) => {
-//   const params = {
-//     TableName: db,
-//     FilterExpression: "id = :id AND email = :email",
-//     ExpressionAttributeValues: {
-//       ":id": id,
-//       ":email": email,
-//     },
-//   };
+const getOwnItems = (db, id, email) => {
+  const params = {
+    TableName: db,
+    FilterExpression: "id = :id AND email = :email",
+    ExpressionAttributeValues: {
+      ":id": id,
+      ":email": email,
+    },
+  };
 
-//   return await dynamo.scan(params).promise();
-// };
+  return await dynamo.scan(params).promise();
+};
 
 exports.handler = async (event, context) => {
   let body;
@@ -74,14 +74,14 @@ exports.handler = async (event, context) => {
             })
             .promise();
           break;
-        case "PUT /markers/{id}":
+        case "PUT /markers":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id;
+          id = uuidv4();
           item = {
             id,
             latlng: requestJSON.latlng,
-            mem_ids: requestJSON.memIds,
-            image_key: requestJSON.imageKey,
+            mem_ids: requestJSON.mem_ids,
+            image_key: requestJSON.image_key,
             creator,
             email,
           };
@@ -93,12 +93,34 @@ exports.handler = async (event, context) => {
             .promise();
           body = item;
           break;
+        case "PUT /markers/{id}":
+          requestJSON = JSON.parse(event.body);
+          id = event.pathParameters.id;
+          const getResp = getOwnItems(MARKER_DB, id, email)
+          if (getResp.Items) {
+            item = {
+              id,
+              latlng: requestJSON.latlng,
+              mems: requestJSON.mems,
+              image_key: requestJSON.image_key,
+              creator,
+              email,
+            };
+            await dynamo
+              .put({
+                TableName: MARKER_DB,
+                Item: item,
+              })
+              .promise();
+            body = item;
+          }
+          break;
         case "GET /mems":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
           break;
-        case "PUT /mems/{id}":
+        case "PUT /mems":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id;
+          id = uuidv4();
           item = {
             id,
             order: requestJSON.order,
@@ -106,7 +128,7 @@ exports.handler = async (event, context) => {
             back: requestJSON.back,
             polygon: requestJSON.polygon,
             width: requestJSON.width,
-            image_key: requestJSON.imageKey,
+            image_key: requestJSON.image_key,
             creator,
             email,
           };
@@ -121,13 +143,13 @@ exports.handler = async (event, context) => {
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
-        case "PUT /memages/{id}":
+        case "PUT /memages":
           requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id;
+          id = uuidv4();
           item = {
             id,
-            mem_ids: requestJSON.memIds,
-            image_key: requestJSON.imageKey,
+            mem_ids: requestJSON.mem_ids,
+            image_key: requestJSON.image_key,
             creator,
             email,
           };
