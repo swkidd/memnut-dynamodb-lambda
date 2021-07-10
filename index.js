@@ -7,18 +7,18 @@ const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MEM_DB = "memnut-mems";
 
-// const getOwnItems = (db, id, email) => {
-//   const params = {
-//     TableName: db,
-//     FilterExpression: "id = :id AND email = :email",
-//     ExpressionAttributeValues: {
-//       ":id": id,
-//       ":email": email,
-//     },
-//   };
+const getOwnItems = async (db, id, email) => {
+  const params = {
+    TableName: db,
+    FilterExpression: "id = :id AND email = :email",
+    ExpressionAttributeValues: {
+      ":id": id,
+      ":email": email,
+    },
+  };
 
-//   return await dynamo.scan(params).promise();
-// };
+  return await dynamo.scan(params).promise();
+};
 
 exports.handler = async (event, context) => {
   let body;
@@ -92,6 +92,28 @@ exports.handler = async (event, context) => {
             })
             .promise();
           body = item;
+          break;
+        case "PUT /markers/{id}":
+          requestJSON = JSON.parse(event.body);
+          id = event.pathParameters.id;
+          const getResp = await getOwnItems(MARKER_DB, id, email)
+          if (getResp.Items) {
+            item = {
+              id,
+              latlng: requestJSON.latlng,
+              mems: requestJSON.mems,
+              image_key: requestJSON.image_key,
+              creator,
+              email,
+            };
+            await dynamo
+              .put({
+                TableName: MARKER_DB,
+                Item: item,
+              })
+              .promise();
+            body = item;
+          }
           break;
         case "GET /mems":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
