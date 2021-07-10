@@ -7,7 +7,7 @@ const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MEM_DB = "memnut-mems";
 
-const getOwnItems = (db, id, email) => {
+const getOwnItems = async (db, id, email) => {
   const params = {
     TableName: db,
     FilterExpression: "id = :id AND email = :email",
@@ -96,7 +96,7 @@ exports.handler = async (event, context) => {
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
           id = event.pathParameters.id;
-          const getResp = getOwnItems(MARKER_DB, id, email)
+          const getResp = await getOwnItems(MARKER_DB, id, email)
           if (getResp.Items) {
             item = {
               id,
