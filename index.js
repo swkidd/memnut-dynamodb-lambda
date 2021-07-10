@@ -80,7 +80,7 @@ exports.handler = async (event, context) => {
           item = {
             id,
             latlng: requestJSON.latlng,
-            mem_ids: requestJSON.mem_ids || [],
+            mems: requestJSON.mems || [],
             image_key: requestJSON.image_key,
             creator,
             email,
@@ -127,7 +127,7 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
-            mem_ids: requestJSON.mem_ids || [],
+            mems: requestJSON.mems || [],
             image_key: requestJSON.image_key,
             creator,
             email,
