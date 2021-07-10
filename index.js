@@ -80,7 +80,11 @@ exports.handler = async (event, context) => {
           item = {
             id,
             latlng: requestJSON.latlng,
+<<<<<<< HEAD
             mem_ids: requestJSON.mem_ids,
+=======
+            mem_ids: requestJSON.mem_ids || [],
+>>>>>>> abfe6b7d5d950e623e4cfa180e75df09602a3d7d
             image_key: requestJSON.image_key,
             creator,
             email,
@@ -123,6 +127,7 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
+            memage_id: requestJSON.memage_id,
             order: requestJSON.order,
             front: requestJSON.front,
             back: requestJSON.back,
@@ -148,7 +153,11 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
+<<<<<<< HEAD
             mem_ids: requestJSON.mem_ids,
+=======
+            mem_ids: requestJSON.mem_ids || [],
+>>>>>>> abfe6b7d5d950e623e4cfa180e75df09602a3d7d
             image_key: requestJSON.image_key,
             creator,
             email,
