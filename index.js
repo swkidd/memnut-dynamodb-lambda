@@ -96,12 +96,12 @@ exports.handler = async (event, context) => {
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
           id = event.pathParameters.id;
-          const getResp = await getOwnItems(MARKER_DB, id, email)
+          const getResp = await getOwnItems(MARKER_DB, id, email);
           if (getResp.Items) {
             item = {
               id,
               latlng: requestJSON.latlng,
-              mems: requestJSON.mems,
+              mems: requestJSON.mems.map((mem) => ({ id: uuidv4(), ...mem })),
               image_key: requestJSON.image_key,
               creator,
               email,
