@@ -23,6 +23,7 @@ const getOwnItems = async (db, id, email) => {
 exports.handler = async (event, context) => {
   let body;
   let statusCode = 200;
+  let getResp;
   let requestJSON;
   let id;
   let item;
@@ -96,7 +97,7 @@ exports.handler = async (event, context) => {
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
           id = event.pathParameters.id;
-          const getResp = await getOwnItems(MARKER_DB, id, email);
+          getResp = await getOwnItems(MARKER_DB, id, email);
           if (getResp.Items) {
             item = {
               id,
@@ -147,7 +148,7 @@ exports.handler = async (event, context) => {
         case "PUT /memages/{id}":
           requestJSON = JSON.parse(event.body);
           id = event.pathParameters.id;
-          const getResp = await getOwnItems(MEMAGE_DB, id, email);
+          getResp = await getOwnItems(MEMAGE_DB, id, email);
           if (getResp.Items) {
             item = {
               id,
