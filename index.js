@@ -80,9 +80,12 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
+            order: requestJSON.order,
             latlng: requestJSON.latlng,
             mem_ids: requestJSON.mem_ids || [],
             image_key: requestJSON.image_key,
+            title: requestJSON.title,
+            text: requestJSON.text,
             creator,
             email,
           };
@@ -101,9 +104,12 @@ exports.handler = async (event, context) => {
           if (getResp.Items) {
             item = {
               id,
+              order: requestJSON.order,
               latlng: requestJSON.latlng,
               mems: requestJSON.mems.map((mem) => ({ id: uuidv4(), ...mem })),
               image_key: requestJSON.image_key,
+              title: requestJSON.title,
+              text: requestJSON.text,
               creator,
               email,
             };
