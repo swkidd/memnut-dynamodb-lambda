@@ -144,6 +144,27 @@ exports.handler = async (event, context) => {
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
+        case "PUT /memages/{id}":
+          requestJSON = JSON.parse(event.body);
+          id = event.pathParameters.id;
+          const getResp = await getOwnItems(MEMAGE_DB, id, email);
+          if (getResp.Items) {
+            item = {
+              id,
+              mems: requestJSON.mems.map((mem) => ({ id: uuidv4(), ...mem })),
+              image_key: requestJSON.image_key,
+              creator,
+              email,
+            };
+          }
+          await dynamo
+            .put({
+              TableName: MEMAGE_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
+          break;
         case "PUT /memages":
           requestJSON = JSON.parse(event.body);
           id = uuidv4();
