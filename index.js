@@ -151,7 +151,7 @@ exports.handler = async (event, context) => {
           if (getResp.Items) {
             item = {
               id,
-              mems: requestJSON.mems.map((mem) => ({ id: uuidv4(), ...mem })),
+              mem_ids: requestJSON.mem_ids,
               image_key: requestJSON.image_key,
               creator,
               email,
