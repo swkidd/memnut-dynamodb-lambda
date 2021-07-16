@@ -80,7 +80,7 @@ exports.handler = async (event, context) => {
           item = {
             id,
             latlng: requestJSON.latlng,
-            mems: requestJSON.mems || [],
+            mem_ids: requestJSON.mem_ids || [],
             image_key: requestJSON.image_key,
             creator,
             email,
@@ -101,7 +101,7 @@ exports.handler = async (event, context) => {
             item = {
               id,
               latlng: requestJSON.latlng,
-              mems: requestJSON.mems,
+              mem_ids: requestJSON.mem_ids || [],
               image_key: requestJSON.image_key,
               creator,
               email,
@@ -149,7 +149,7 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
-            mems: requestJSON.mems || [],
+            mem_ids: requestJSON.mem_ids || [],
             image_key: requestJSON.image_key,
             creator,
             email,
@@ -157,6 +157,32 @@ exports.handler = async (event, context) => {
           await dynamo
             .put({
               TableName: MEMAGE_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
+          break;
+        case "GET /markermems":
+          body = await dynamo.scan({ TableName: MARKERMEM_DB }).promise();
+          break;
+        case "PUT /markermems":
+          requestJSON = JSON.parse(event.body);
+          id = uuidv4();
+          item = {
+            id,
+            order: requestJSON.order,
+            mem_id: requestJSON.mem_id,
+            scaleX: requestJSON.scaleX,
+            scaleY: requestJSON.scaleY,
+            left: requestJSON.left,
+            top: requestJSON.top,
+            width: requestJSON.width,
+            creator,
+            email,
+          };
+          await dynamo
+            .put({
+              TableName: MARKERMEM_DB,
               Item: item,
             })
             .promise();
