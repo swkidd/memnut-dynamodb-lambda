@@ -5,6 +5,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
+const MARKERMEM_DB = "memnut-markermems";
 const MEM_DB = "memnut-mems";
 
 const getOwnItems = async (db, id, email) => {
@@ -23,6 +24,7 @@ const getOwnItems = async (db, id, email) => {
 exports.handler = async (event, context) => {
   let body;
   let statusCode = 200;
+  let getResp;
   let requestJSON;
   let id;
   let item;
@@ -96,7 +98,7 @@ exports.handler = async (event, context) => {
         case "PUT /markers/{id}":
           requestJSON = JSON.parse(event.body);
           id = event.pathParameters.id;
-          const getResp = await getOwnItems(MARKER_DB, id, email)
+          getResp = await getOwnItems(MARKER_DB, id, email);
           if (getResp.Items) {
             item = {
               id,
@@ -143,6 +145,27 @@ exports.handler = async (event, context) => {
           break;
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
+          break;
+        case "PUT /memages/{id}":
+          requestJSON = JSON.parse(event.body);
+          id = event.pathParameters.id;
+          getResp = await getOwnItems(MEMAGE_DB, id, email);
+          if (getResp.Items) {
+            item = {
+              id,
+              mem_ids: requestJSON.mem_ids,
+              image_key: requestJSON.image_key,
+              creator,
+              email,
+            };
+          }
+          await dynamo
+            .put({
+              TableName: MEMAGE_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
           break;
         case "PUT /memages":
           requestJSON = JSON.parse(event.body);
