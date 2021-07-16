@@ -194,6 +194,7 @@ exports.handler = async (event, context) => {
           item = {
             id,
             order: requestJSON.order,
+            marker_id: requestJSON.marker_id,
             mem_id: requestJSON.mem_id,
             scaleX: requestJSON.scaleX,
             scaleY: requestJSON.scaleY,
