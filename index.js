@@ -22,14 +22,13 @@ const getOwnItems = async (db, id, email) => {
 };
 
 const validID = (db, id, email) => {
-  getResp = await getOwnItems(db, id, email);
+  const getResp = await getOwnItems(db, id, email);
   return !!getResp.Items;
 };
 
 exports.handler = async (event, context) => {
   let body;
   let statusCode = 200;
-  let getResp;
   let requestJSON;
   let id;
   let item;
