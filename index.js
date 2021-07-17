@@ -21,6 +21,11 @@ const getOwnItems = async (db, id, email) => {
   return await dynamo.scan(params).promise();
 };
 
+const validID = (db, id, email) => {
+  getResp = await getOwnItems(db, id, email);
+  return !!getResp.Items;
+};
+
 exports.handler = async (event, context) => {
   let body;
   let statusCode = 200;
@@ -78,7 +83,11 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markers":
           requestJSON = JSON.parse(event.body);
-          id = uuidv4();
+          if (requestJSON.id && !validID(requestJSON.id)) {
+            throw Error("invalid request");
+          } else {
+            id = uuidv4();
+          }
           item = {
             id,
             latlng: requestJSON.latlng,
@@ -95,34 +104,16 @@ exports.handler = async (event, context) => {
             .promise();
           body = item;
           break;
-        case "PUT /markers/{id}":
-          requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id;
-          getResp = await getOwnItems(MARKER_DB, id, email);
-          if (getResp.Items) {
-            item = {
-              id,
-              latlng: requestJSON.latlng,
-              mem_ids: requestJSON.mem_ids || [],
-              image_key: requestJSON.image_key,
-              creator,
-              email,
-            };
-            await dynamo
-              .put({
-                TableName: MARKER_DB,
-                Item: item,
-              })
-              .promise();
-            body = item;
-          }
-          break;
         case "GET /mems":
           body = await dynamo.scan({ TableName: MEM_DB }).promise();
           break;
         case "PUT /mems":
           requestJSON = JSON.parse(event.body);
-          id = uuidv4();
+          if (requestJSON.id && !validID(requestJSON.id)) {
+            throw Error("invalid request");
+          } else {
+            id = uuidv4();
+          }
           item = {
             id,
             memage_id: requestJSON.memage_id,
@@ -146,30 +137,13 @@ exports.handler = async (event, context) => {
         case "GET /memages":
           body = await dynamo.scan({ TableName: MEMAGE_DB }).promise();
           break;
-        case "PUT /memages/{id}":
-          requestJSON = JSON.parse(event.body);
-          id = event.pathParameters.id;
-          getResp = await getOwnItems(MEMAGE_DB, id, email);
-          if (getResp.Items) {
-            item = {
-              id,
-              mem_ids: requestJSON.mem_ids,
-              image_key: requestJSON.image_key,
-              creator,
-              email,
-            };
-          }
-          await dynamo
-            .put({
-              TableName: MEMAGE_DB,
-              Item: item,
-            })
-            .promise();
-          body = item;
-          break;
         case "PUT /memages":
           requestJSON = JSON.parse(event.body);
-          id = uuidv4();
+          if (requestJSON.id && !validID(requestJSON.id)) {
+            throw Error("invalid request");
+          } else {
+            id = uuidv4();
+          }
           item = {
             id,
             mem_ids: requestJSON.mem_ids || [],
@@ -190,7 +164,11 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markermems":
           requestJSON = JSON.parse(event.body);
-          id = uuidv4();
+          if (requestJSON.id && !validID(requestJSON.id)) {
+            throw Error("invalid request");
+          } else {
+            id = uuidv4();
+          }
           item = {
             id,
             order: requestJSON.order,
