@@ -85,7 +85,7 @@ exports.handler = async (event, context) => {
           requestJSON = JSON.parse(event.body);
           if (requestJSON.id && !validID(requestJSON.id)) {
             throw Error("invalid request");
-          } else {
+          } else if (!requestJSON.id) {
             id = uuidv4();
           }
           item = {
@@ -111,7 +111,7 @@ exports.handler = async (event, context) => {
           requestJSON = JSON.parse(event.body);
           if (requestJSON.id && !validID(requestJSON.id)) {
             throw Error("invalid request");
-          } else {
+          } else if (!requestJSON.id) {
             id = uuidv4();
           }
           item = {
@@ -141,7 +141,7 @@ exports.handler = async (event, context) => {
           requestJSON = JSON.parse(event.body);
           if (requestJSON.id && !validID(requestJSON.id)) {
             throw Error("invalid request");
-          } else {
+          } else if (!requestJSON.id) {
             id = uuidv4();
           }
           item = {
@@ -166,7 +166,7 @@ exports.handler = async (event, context) => {
           requestJSON = JSON.parse(event.body);
           if (requestJSON.id && !validID(requestJSON.id)) {
             throw Error("invalid request");
-          } else {
+          } else if (!requestJSON.id) {
             id = uuidv4();
           }
           item = {
