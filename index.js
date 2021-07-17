@@ -21,7 +21,7 @@ const getOwnItems = async (db, id, email) => {
   return await dynamo.scan(params).promise();
 };
 
-const validID = (db, id, email) => {
+const validID = async (db, id, email) => {
   const getResp = await getOwnItems(db, id, email);
   return !!getResp.Items;
 };
