@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
+const PALACE_DB = "memnut-palaces";
 const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MARKERMEM_DB = "memnut-markermems";
@@ -82,10 +83,12 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markers":
           requestJSON = JSON.parse(event.body);
-          if (requestJSON.id && !validID(requestJSON.id)) {
+          if (requestJSON.id && !validID(MARKER_DB, requestJSON.id, email)) {
             throw Error("invalid request");
           } else if (!requestJSON.id) {
             id = uuidv4();
+          } else {
+            id = requestJSON.id;
           }
           item = {
             id,
@@ -108,10 +111,12 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /mems":
           requestJSON = JSON.parse(event.body);
-          if (requestJSON.id && !validID(requestJSON.id)) {
+          if (requestJSON.id && !validID(MEM_DB, requestJSON.id, email)) {
             throw Error("invalid request");
           } else if (!requestJSON.id) {
             id = uuidv4();
+          } else {
+            id = requestJSON.id;
           }
           item = {
             id,
@@ -138,10 +143,12 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /memages":
           requestJSON = JSON.parse(event.body);
-          if (requestJSON.id && !validID(requestJSON.id)) {
+          if (requestJSON.id && !validID(MEMAGE_DB, requestJSON.id, email)) {
             throw Error("invalid request");
           } else if (!requestJSON.id) {
             id = uuidv4();
+          } else {
+            id = requestJSON.id;
           }
           item = {
             id,
@@ -163,10 +170,12 @@ exports.handler = async (event, context) => {
           break;
         case "PUT /markermems":
           requestJSON = JSON.parse(event.body);
-          if (requestJSON.id && !validID(requestJSON.id)) {
+          if (requestJSON.id && !validID(MARKERMEM_DB, requestJSON.id, email)) {
             throw Error("invalid request");
           } else if (!requestJSON.id) {
             id = uuidv4();
+          } else {
+            id = requestJSON.id;
           }
           item = {
             id,
@@ -178,6 +187,34 @@ exports.handler = async (event, context) => {
             left: requestJSON.left,
             top: requestJSON.top,
             width: requestJSON.width,
+            creator,
+            email,
+          };
+          await dynamo
+            .put({
+              TableName: MARKERMEM_DB,
+              Item: item,
+            })
+            .promise();
+          body = item;
+          break;
+        case "GET /palaces":
+          body = await dynamo.scan({ TableName: PALACE_DB }).promise();
+          break;
+        case "PUT /palaces":
+          requestJSON = JSON.parse(event.body);
+          if (requestJSON.id && !validID(PALACE_DB, requestJSON.id, email)) {
+            throw Error("invalid request");
+          } else if (!requestJSON.id) {
+            id = uuidv4();
+          } else {
+            id = requestJSON.id;
+          }
+          item = {
+            id,
+            title: requestJSON.title,
+            text: requestJSON.text,
+            marker_ids: requestJSON.marker_ids || [],
             creator,
             email,
           };
