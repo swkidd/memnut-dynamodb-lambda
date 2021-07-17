@@ -221,7 +221,7 @@ exports.handler = async (event, context) => {
           };
           await dynamo
             .put({
-              TableName: MARKERMEM_DB,
+              TableName: PALACE_DB,
               Item: item,
             })
             .promise();
