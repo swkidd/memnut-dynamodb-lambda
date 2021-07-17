@@ -92,6 +92,7 @@ exports.handler = async (event, context) => {
           }
           item = {
             id,
+            palace_id: requestJSON.palace_id,
             latlng: requestJSON.latlng,
             mem_ids: requestJSON.mem_ids || [],
             image_key: requestJSON.image_key,
