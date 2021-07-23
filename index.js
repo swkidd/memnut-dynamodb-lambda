@@ -240,7 +240,7 @@ exports.handler = async (event, context) => {
           if (getResp.Items) {
             item = {
               id,
-              palace_id: this.requestJSON.palace_id,
+              palace_id: requestJSON.palace_id,
               creator,
               email,
             };
@@ -258,7 +258,7 @@ exports.handler = async (event, context) => {
           id = uuidv4();
           item = {
             id,
-            palace_id: this.requestJSON.palace_id,
+            palace_id: requestJSON.palace_id,
             creator,
             email,
           };
