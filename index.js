@@ -8,6 +8,7 @@ const MARKER_DB = "memnut-markers";
 const MEMAGE_DB = "memnut-memages";
 const MARKERMEM_DB = "memnut-markermems";
 const MEM_DB = "memnut-mems";
+const POST_DB = "memnut-posts";
 
 const getOwnItems = async (db, id, email) => {
   const params = {
